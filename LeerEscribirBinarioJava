@@ -1,0 +1,115 @@
+//Primera clase .java
+
+import java.io.IOException;
+
+
+public class Ejecutable {
+    public static void main(String[] args) throws IOException  {
+       
+      FicherosDeclaracion fd = new FicherosDeclaracion();
+    }
+    
+}
+
+//Segunda clase .java
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Scanner;
+public class FicherosDeclaracion {
+    
+    final String rutaBase = "C:\\BinarioPrueba\\";
+    final String ficheroBase = "datos.ods";
+    File rutaNormal;
+    File rutaPorDefecto;
+    
+    FicherosDeclaracion() throws IOException {
+      rutaFichero("numeros.dat");
+      escribirFichero();
+      lectura();
+    }
+    
+    public void rutaFichero (String nombreFichero) throws IOException {
+        rutaNormal = new File(rutaBase, nombreFichero);
+        rutaPorDefecto = new File(rutaBase, ficheroBase);
+        crearFichero();
+    }
+    
+    public void crearFichero() throws IOException {
+        if(rutaNormal.createNewFile()) {
+            System.out.println("Fichero creado: " + rutaNormal.getPath());
+        }
+        if(rutaPorDefecto.createNewFile()) {
+            System.out.println("Fichero creado: " + rutaPorDefecto.getPath());
+        }
+    }
+    
+    public void escribirFichero() {
+        
+        DataOutputStream dosFicheroNormal;
+        DataOutputStream dosFicheroPorDefecto;
+        
+        try {
+            
+            dosFicheroNormal = new DataOutputStream(new FileOutputStream(rutaNormal));
+            dosFicheroPorDefecto = new DataOutputStream(new FileOutputStream(rutaPorDefecto));
+            
+            System.out.println("Introduzca números(-1 finaliza la escritura): ");
+            Scanner prueba = new Scanner(System.in);
+            int leer;
+            
+            try {
+              while((leer = prueba.nextInt() )!= (-1)) {
+                dosFicheroPorDefecto.writeInt(leer);
+                dosFicheroNormal.writeInt(leer);
+              } 
+              dosFicheroPorDefecto.close();
+              dosFicheroNormal.close();
+              prueba.close();
+              
+            } catch (IOException ex) {
+              System.out.println("Error "+ ex);
+            }
+             
+        } catch (FileNotFoundException ex) {
+            System.out.println("Error "+ ex);
+        } 
+    }
+    
+    public void lectura() {
+        
+        DataInputStream disFicheroNormal;
+        
+        try {
+          disFicheroNormal = new DataInputStream(new FileInputStream(rutaNormal));
+            
+          System.out.println("Contenido de los ficheros: ");
+          int leer;
+        
+            try {
+                
+              while ((leer = disFicheroNormal.read()) != -1) {
+                  if (leer != 0) {
+                     System.out.println((int) leer); 
+                  }
+                
+              }
+              
+              System.out.println();
+              disFicheroNormal.close();
+              
+            } catch (IOException ex) {
+              System.out.println("Error "+ ex);
+            }
+          
+        } catch (FileNotFoundException ex) {
+          System.out.println("Error "+ ex);
+          
+        }
+    }
+}
